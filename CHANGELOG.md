@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.0](https://github.com/giancarloerra/apd/compare/v1.1.1...v1.2.0) (2026-03-15)
+
+### Features
+
+* **skychart:** add SH2, LBN, vdB, HCG, and Abell PNe DSO catalogs ([e5d2500](https://github.com/giancarloerra/apd/commit/e5d2500061a7ea52c31e66cce66ec4ad6d305fec))
+
 ## [1.1.1](https://github.com/giancarloerra/apd/compare/v1.1.0...v1.1.1) (2026-03-12)
 
 ## [1.1.0](https://github.com/giancarloerra/apd/compare/v1.0.0...v1.1.0) (2026-03-10)
