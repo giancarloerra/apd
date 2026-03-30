@@ -203,9 +203,7 @@
         #panel-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
         #panel-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 
-        .mode-toggle { display: flex; margin: 15px 0 5px 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--accent); }
-        .mode-toggle button { flex: 1; background: #1a1a1a; color: #aaa; border: none; padding: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; border-radius: 0; }
-        .mode-toggle button.active { background: var(--accent); color: #000; }
+
 
         .section-title { margin-top: 15px; margin-bottom: 10px; font-size: 0.95rem; border-bottom: 1px solid #444; padding-bottom: 3px; color: var(--accent); text-transform: uppercase; }
         .control-group { margin-bottom: 14px; }
@@ -359,6 +357,8 @@
         #quick-bar button:hover .qb-icon { color: var(--accent-light); }
         #qb-night.active { background: rgba(255,0,0,0.25) !important; color: #ff4444 !important; border-color: rgba(255,0,0,0.4); }
         #qb-night.active .qb-icon { color: #ff4444; }
+        #qb-horizon.active { background: rgba(244,63,94,0.25) !important; color: #f43f5e !important; border-color: rgba(244,63,94,0.4); }
+        #qb-horizon.active .qb-icon { color: #f43f5e; }
         #qb-fov-lock.active { background: rgba(255,170,0,0.25) !important; color: #ffaa00 !important; border-color: rgba(255,170,0,0.4); }
         #qb-fov-lock.active .qb-icon { color: #ffaa00; }
 
@@ -486,10 +486,7 @@
                 <button id="qb-search-btn" title="Go to object"><svg class="qb-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
             </div>
             <div class="qb-sep"></div>
-            <div class="qb-group">
-                <button id="qb-framing" class="qb-toggle active" title="Camera & Mount"><svg class="qb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
-                <button id="qb-skychart" class="qb-toggle" title="Sky Chart"><svg class="qb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M4.5 7h15M4.5 17h15"/></svg></button>
-            </div>
+            <button id="qb-horizon" class="qb-toggle" title="Toggle Horizon & Grid"><svg class="qb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M4.5 7h15M4.5 17h15"/></svg></button>
             <div class="qb-sep"></div>
             <div class="qb-group">
                 <button onclick="offsetTime('h',-1)" title="−1 hour"><svg class="qb-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
@@ -540,10 +537,6 @@
             </div>
         </div>
         <div id="panel-content">
-            <div class="mode-toggle">
-                <button id="btn-mode-framing" class="active" onclick="setAppMode('framing')">Framing</button>
-                <button id="btn-mode-skychart" onclick="setAppMode('skychart')">Sky Chart</button>
-            </div>
 
             <!-- TARGET & NAVIGATION (always visible) -->
             <div class="control-group flex-row" style="margin-top: 10px; margin-bottom: 5px;">
@@ -563,8 +556,7 @@
                 </div>
             </div>
 
-            <!-- CAMERA FRAMING -->
-            <div id="section-framing">
+            <!-- CAMERA FRAMING (always visible) -->
                 <div class="sub-panel collapsed" id="sp-camera">
                     <div class="sub-panel-header" onclick="toggleSubPanel('sp-camera')">
                         <span class="sp-title">Camera Framing & Mount</span>
@@ -637,10 +629,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- SKY CHART -->
-            <div id="section-skychart" style="display: none;">
+            <!-- TIME CONTROL (always visible) -->
                 <div class="sub-panel collapsed" id="sp-time">
                     <div class="sub-panel-header" onclick="toggleSubPanel('sp-time')">
                         <span class="sp-title">Time Control</span>
@@ -670,6 +660,8 @@
                         <span class="sp-arrow">▼</span>
                     </div>
                     <div class="sub-panel-body" style="font-size: 0.9rem;">
+                        <label class="overlay-row" style="margin-bottom:8px;font-weight:bold;"><input type="checkbox" id="chk-horizon-enabled"> Enable Horizon & Grid</label>
+                        <div id="horizon-options" style="display:none">
                         <label class="overlay-row"><input type="checkbox" id="chk-horizon" checked> Horizon Line</label>
                         <label class="overlay-row"><input type="checkbox" id="chk-darken-ground"> Darken below horizon</label>
                         <label class="overlay-row"><input type="checkbox" id="chk-grid" checked> Alt-Az Grid</label>
@@ -682,9 +674,9 @@
                             <input type="range" id="grid-opacity-slider" min="5" max="100" step="5" value="85"
                                 oninput="gridOverlayOpacity=eqGridOpacity=this.value/100; document.getElementById('grid-opacity-val').innerText=this.value+'%'">
                         </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             <!-- OVERLAYS (toggles) -->
             <div class="sub-panel collapsed" id="sp-overlays">
@@ -934,7 +926,7 @@
 <script>
     // ===== CORE STATE =====
     let aladin = null;
-    let appMode = 'framing';
+    let horizonEnabled = false;
     let activeFov = [2.13, 1.2];
     let activeFovName = '';
     let obsLat = 51.50, obsLon = -0.12;
@@ -1321,7 +1313,7 @@
             let center = aladin.getRaDec();
             let fov = aladin.getFov();
             let s = {
-                mode: appMode,
+                horizonEnabled: horizonEnabled,
                 survey: document.getElementById('survey-select').value,
                 mount: document.getElementById('mount-select').value,
                 activeFovId: activeFovId,
@@ -1469,8 +1461,13 @@
             if (s.centerRA != null && s.centerDec != null) aladin.gotoRaDec(s.centerRA, s.centerDec);
             if (s.viewFov) aladin.setFov(s.viewFov);
 
-            // Mode
-            if (s.mode) setAppMode(s.mode);
+            // Horizon enabled state
+            if (s.horizonEnabled != null) {
+                setHorizonEnabled(s.horizonEnabled);
+            } else if (s.mode === 'skychart') {
+                // Backward compat: old saved state had mode='skychart'
+                setHorizonEnabled(true);
+            }
         } catch(e) { console.warn('Settings restore error:', e); }
     }
 
@@ -2003,8 +2000,8 @@
         if (dCanvas.width !== W || dCanvas.height !== H) { dCanvas.width = W; dCanvas.height = H; }
         dCtx.clearRect(0, 0, W, H);
 
-        // --- Alt-Az Grid (sky chart mode) ---
-        if (appMode === 'skychart') {
+        // --- Alt-Az Grid (when horizon enabled) ---
+        if (horizonEnabled) {
             let lst = getLST(getJD(getObsTime()), obsLon);
 
             let gop = gridOverlayOpacity;
@@ -2225,7 +2222,7 @@
         }
 
         // --- Darken below horizon + horizon line (drawn on high-z canvas so it covers HTML labels too) ---
-        if (appMode === 'skychart') {
+        if (horizonEnabled) {
             let lst = getLST(getJD(getObsTime()), obsLon);
 
             if (document.getElementById('chk-darken-ground').checked) {
@@ -2435,8 +2432,8 @@
             updateMosaicTiles(activeFov[0] * scale, activeFov[1] * scale, finalAngle, fovVisible);
         }
 
-        // Cardinal labels (Sky Chart mode only)
-        if (appMode === 'skychart') {
+        // Cardinal labels (when horizon enabled)
+        if (horizonEnabled) {
             cardinalsData.forEach(c => {
                 let el = document.getElementById(c.id);
                 let [ra, dec] = altAzToRaDec(c.alt, c.az, obsLat, lst);
@@ -2576,14 +2573,13 @@
         debouncedSave();
     }
 
-    // ===== MODE SWITCHING =====
-    function setAppMode(mode) {
-        appMode = mode;
-        document.getElementById('btn-mode-framing').classList.toggle('active', mode === 'framing');
-        document.getElementById('btn-mode-skychart').classList.toggle('active', mode === 'skychart');
-        document.getElementById('section-framing').style.display = mode === 'framing' ? 'block' : 'none';
-        document.getElementById('section-skychart').style.display = mode === 'skychart' ? 'block' : 'none';
+    // ===== HORIZON TOGGLE =====
+    function setHorizonEnabled(enabled) {
+        horizonEnabled = enabled;
+        document.getElementById('chk-horizon-enabled').checked = enabled;
+        document.getElementById('horizon-options').style.display = enabled ? '' : 'none';
         syncQuickBar();
+        debouncedSave();
     }
 
     // ===== TIME CONTROLS =====
@@ -2599,9 +2595,8 @@
             var d = t.getDate(), mo = t.toLocaleString('en', {month:'short'}), hh = String(t.getHours()).padStart(2,'0'), mm = String(t.getMinutes()).padStart(2,'0');
             tv.textContent = d + ' ' + mo + ' ' + hh + ':' + mm;
         }
-        var qf = document.getElementById('qb-framing'), qs = document.getElementById('qb-skychart');
-        if (qf) qf.classList.toggle('active', appMode === 'framing');
-        if (qs) qs.classList.toggle('active', appMode === 'skychart');
+        var qh = document.getElementById('qb-horizon');
+        if (qh) qh.classList.toggle('active', horizonEnabled);
         var qn = document.getElementById('qb-night');
         if (qn) qn.classList.toggle('active', document.getElementById('chk-nightmode').checked);
         var ql = document.getElementById('qb-fov-lock');
@@ -2622,9 +2617,9 @@
     function offsetTime(unit, amt) {
         if (isTimeNow) { manualTime = new Date(); isTimeNow = false; }
 
-        // In sky chart mode, preserve Alt-Az pointing so grid stays fixed and sky moves
+        // When horizon is enabled, preserve Alt-Az pointing so grid stays fixed and sky moves
         let savedAltAz = null;
-        if (appMode === 'skychart' && aladin) {
+        if (horizonEnabled && aladin) {
             let radec = aladin.getRaDec();
             if (radec && radec.length >= 2) {
                 let lst = getLST(getJD(manualTime), obsLon);
@@ -2715,8 +2710,8 @@
     document.getElementById('qb-search').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') document.getElementById('qb-search-btn').click();
     });
-    document.getElementById('qb-framing').addEventListener('click', () => { setAppMode('framing'); syncQuickBar(); });
-    document.getElementById('qb-skychart').addEventListener('click', () => { setAppMode('skychart'); syncQuickBar(); });
+    document.getElementById('qb-horizon').addEventListener('click', () => { setHorizonEnabled(!horizonEnabled); });
+    document.getElementById('chk-horizon-enabled').addEventListener('change', function() { setHorizonEnabled(this.checked); });
     document.getElementById('qb-zin').addEventListener('click', () => { let f = aladin.getFov(); aladin.setFov((Array.isArray(f)?f[0]:f)*0.7); });
     document.getElementById('qb-zout').addEventListener('click', () => { let f = aladin.getFov(); aladin.setFov((Array.isArray(f)?f[0]:f)*1.4); });
     document.getElementById('qb-reset').addEventListener('click', () => {
