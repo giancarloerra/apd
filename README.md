@@ -18,6 +18,8 @@ All packed into a universal web based app, easy to access from any device, with 
 
 I've decided to open source it as I think it could be useful to other astrophotographers, and maybe build it into something even better. It will always be "An Opinionated Dashboard for Planning Astrophotography" — my personal vision of the perfect tool, but I'm excited to open it to contributions and suggestions from the community!
 
+If you want to see what I actually point all this planning at, my astrophotography is at [astro.observer](https://astro.observer).
+
 ---
 
 > **🌟 Like what you see?** This app is all about chasing stars — so why not give it one?
@@ -45,6 +47,7 @@ I've decided to open source it as I think it could be useful to other astrophoto
 - [📊 API Endpoints](#-api-endpoints)
 - [📁 File Structure](#-file-structure)
 - [🤝 Contributing](#-contributing)
+- [🔭 The rest of what I do](#-the-rest-of-what-i-do)
 - [📝 License](#-license)
 
 ---
@@ -792,6 +795,15 @@ apd/
 ├── LICENSE                         # AGPL-3.0-or-later
 └── README.md
 ```
+
+---
+
+## 🔭 The rest of what I do
+
+APD is one of three things I build around the same hobby:
+
+- **[Astrophotography gallery](https://astro.observer)**: the photographs themselves, taken from Norwich and Norfolk and from trips inside the Arctic Circle, with the object, the position and the kit listed for each one. Prints available.
+- **[Solar system model](https://astro.observer/orrery/)**: an interactive 3D solar system in the browser, driven by real NASA/JPL orbital data, with a true-scale mode that shows the distances as they actually are. Also AGPL-3.0-or-later, [source here](https://github.com/giancarloerra/Astro.Observer-Orrery).
 
 ---
 

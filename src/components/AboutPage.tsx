@@ -149,8 +149,16 @@ export function AboutPage() {
           </div>
         </div>
 
-        <p className="text-center mt-12 text-xs text-slate-700 tracking-wide">
-          © 2026 Giancarlo Erra
+        <p className="text-center mt-12 text-xs text-slate-600 tracking-wide">
+          © 2026 Giancarlo Erra ·{' '}
+          <a
+            href="https://astro.observer"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-500 hover:text-accent underline-offset-4 hover:underline transition-colors"
+          >
+            astrophotography at astro.observer
+          </a>
         </p>
       </div>
     </div>
